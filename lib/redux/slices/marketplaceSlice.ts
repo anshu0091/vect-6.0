@@ -53,7 +53,7 @@ const initialState: MarketplaceState = {
 // Async thunk for fetching carbon credits
 export const fetchMarketplaceData = createAsyncThunk(
   'marketplace/fetchData',
-  async (filters?: MarketplaceState['filters']) => {
+  async (filters: MarketplaceState['filters'] | undefined = undefined) => {
     const cleanFilters = filters ? Object.fromEntries(
       Object.entries(filters).filter(([_, value]) => value !== null)
     ) : undefined;

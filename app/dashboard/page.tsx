@@ -24,7 +24,7 @@ export default function Dashboard() {
       if (data.user) {
         setUser(data.user);
         // Fetch wallet data for the authenticated user
-        dispatch(fetchWalletData(data.user.id));
+        dispatch(fetchWalletData());
       } else {
         router.push('/auth/login');
       }

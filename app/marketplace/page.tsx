@@ -101,7 +101,6 @@ export default function Marketplace() {
     
     try {
       await dispatch(purchaseCarbonCredit({
-        userId: user.id,
         creditId: selectedListing.id,
         creditName: selectedListing.name,
         quantity: purchaseQuantity,
@@ -149,22 +148,23 @@ export default function Marketplace() {
                 className="object-cover brightness-50"
               />
             </div>
-            <div className="py-16 px-8 md:py-24 md:px-12">
+            <div className="absolute inset-0 bg-black/30"></div>
+            <div className="relative py-16 px-8 md:py-24 md:px-12">
               <div className="max-w-2xl">
-                <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-lg">
                   Carbon Credits Marketplace
                 </h1>
-                <p className="text-lg text-gray-200 mb-6">
+                <p className="text-lg text-gray-100 mb-6 drop-shadow-md leading-relaxed">
                   Browse and purchase verified carbon credits from projects around the world. Make a real impact on climate change.
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <button 
                     onClick={() => window.scrollTo({ top: document.getElementById('listings')?.offsetTop || 0 - 100, behavior: 'smooth' })}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-full font-medium flex items-center gap-2 transition-colors"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 transition-colors shadow-lg hover:shadow-xl"
                   >
                     Browse Credits <ArrowUpRight className="w-4 h-4" />
                   </button>
-                  <button className="bg-white/20 hover:bg-white/30 text-white px-6 py-2 rounded-full font-medium flex items-center gap-2 backdrop-blur-sm transition-colors">
+                  <button className="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 backdrop-blur-sm transition-colors border border-white/30 shadow-lg hover:shadow-xl">
                     Learn More
                   </button>
                 </div>
