@@ -4,6 +4,7 @@ import { ArrowRight, Shield, Zap, Globe, ChartBar, Users, ArrowUpRight, Check, W
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import ContactSalesModal from '@/components/ContactSalesModal';
 import { useState } from 'react';
 
@@ -39,9 +40,12 @@ export default function Home() {
               >
                 Get Started <ArrowRight className="w-5 h-5" />
               </Link>
-              <button className="bg-white/20 hover:bg-white/30 text-white px-8 py-3 rounded-full font-semibold flex items-center gap-2 backdrop-blur-sm transition-colors">
+              <Link
+                href="/how-it-works"
+                className="bg-white/20 hover:bg-white/30 text-white px-8 py-3 rounded-full font-semibold flex items-center gap-2 backdrop-blur-sm transition-colors"
+              >
                 Learn More <ArrowUpRight className="w-5 h-5" />
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -292,58 +296,7 @@ export default function Home() {
         <ContactSalesModal open={showContactModal} onClose={() => setShowContactModal(false)} />
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <Link href="/" className="flex items-center gap-2 mb-4">
-                <Image
-                  src="/vectorium-logo.png"
-                  alt="Vectorium"
-                  width={24}
-                  height={24}
-                  className="rounded-full"
-                />
-                <span className="text-xl font-bold">Vectorium</span>
-              </Link>
-              <p className="text-gray-400">
-                Revolutionizing sustainability through blockchain technology
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Platform</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">How it Works</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Security</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Terms</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Cookies</a></li>
-                <li><a href="#" className="hover:text-emerald-400 transition-colors">Licenses</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-            <p>© 2025 Vectorium. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </main>
   );
 }
