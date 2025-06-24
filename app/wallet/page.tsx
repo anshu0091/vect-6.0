@@ -56,20 +56,25 @@ const WalletPage: NextPage = () => {
     setSellPrice(0);
   };
 
-  const handleSell = () => {
+  const handleSell = async () => {
     if (!selectedCredit) return;
     
-    dispatch(sellCarbonCredit({
-      creditId: selectedCredit.id,
-      creditName: selectedCredit.name,
-      quantity: sellQuantity,
-      price: sellPrice
-    }));
-    
-    closeSellModal();
-    
-    // Show success message
-    alert(`Successfully sold ${sellQuantity} ${selectedCredit.name} credits!`);
+    try {
+      await dispatch(sellCarbonCredit({
+        creditId: selectedCredit.id,
+        creditName: selectedCredit.name,
+        quantity: sellQuantity,
+        price: sellPrice
+      })).unwrap();
+      
+      closeSellModal();
+      
+      // Show success message
+      alert(`Successfully sold ${sellQuantity} ${selectedCredit.name} credits for $${(sellQuantity * sellPrice).toFixed(2)}!`);
+    } catch (error) {
+      console.error('Sell failed:', error);
+      alert('Sale failed. Please try again.');
+    }
   };
 
   if (loading) {
@@ -125,7 +130,7 @@ const WalletPage: NextPage = () => {
               </div>
               <div className="bg-emerald-50 p-4 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
-                  <div className="text-emerald-600 font-bold text-2xl">{totalCarbonReduction}</div>
+                  <div className="text-emerald-600 font-bold text-2xl">{totalCarbonReduction.toFixed(1)}</div>
                   <BarChart2 className="w-5 h-5 text-emerald-600" />
                 </div>
                 <div className="text-sm text-gray-600">CO₂ Offset (tons)</div>
@@ -225,7 +230,7 @@ const WalletPage: NextPage = () => {
                               <td className="py-3 px-4">{credit.quantity}</td>
                               <td className="py-3 px-4">{credit.vintage}</td>
                               <td className="py-3 px-4">{credit.certificationBody}</td>
-                              <td className="py-3 px-4">{credit.carbonReduction} tons</td>
+                              <td className="py-3 px-4">{credit.carbonReduction.toFixed(1)} tons</td>
                               <td className="py-3 px-4">
                                 <div className="flex gap-2">
                                   <button
@@ -343,7 +348,7 @@ const WalletPage: NextPage = () => {
                         </div>
                         <div>
                           <p className="text-sm text-gray-600">Total CO₂ Offset</p>
-                          <p className="text-3xl font-bold text-emerald-600">{totalCarbonReduction} tons</p>
+                          <p className="text-3xl font-bold text-emerald-600">{totalCarbonReduction.toFixed(1)} tons</p>
                         </div>
                       </div>
                       <div className="space-y-4">
@@ -402,7 +407,7 @@ const WalletPage: NextPage = () => {
                                 </span>
                               </div>
                               <div className="text-sm text-gray-600 mb-3">
-                                {credit.carbonReduction} tons CO₂ offset
+                                {credit.carbonReduction.toFixed(1)} tons CO₂ offset
                               </div>
                               <button
                                 onClick={() => alert(`Certificate for ${credit.name} would be downloaded here.`)}
@@ -427,13 +432,13 @@ const WalletPage: NextPage = () => {
                         <h4 className="font-medium mb-2">Annual Offset Goal</h4>
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-sm text-gray-600">Progress</span>
-                          <span className="text-sm font-medium">{totalCarbonReduction}/100 tons</span>
+                          <span className="text-sm font-medium">{totalCarbonReduction.toFixed(1)}/100 tons</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
                           <div className="bg-emerald-600 h-2.5 rounded-full" style={{ width: `${Math.min(100, totalCarbonReduction)}%` }}></div>
                         </div>
                         <p className="text-xs text-gray-500">
-                          {totalCarbonReduction >= 100 ? 'Goal achieved!' : `${100 - totalCarbonReduction} tons to go`}
+                          {totalCarbonReduction >= 100 ? 'Goal achieved!' : `${(100 - totalCarbonReduction).toFixed(1)} tons to go`}
                         </p>
                       </div>
                       <div className="bg-white rounded-lg p-4">
@@ -542,9 +547,10 @@ const WalletPage: NextPage = () => {
               <div className="flex gap-3">
                 <button
                   onClick={handleSell}
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg font-medium transition-colors"
+                  disabled={walletLoading}
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-300 text-white py-2 rounded-lg font-medium transition-colors"
                 >
-                  Confirm Sale
+                  {walletLoading ? 'Processing...' : 'Confirm Sale'}
                 </button>
                 <button
                   onClick={closeSellModal}

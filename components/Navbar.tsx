@@ -4,14 +4,17 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Menu, X, LogIn, UserPlus, ShoppingCart, Wallet, Bell } from 'lucide-react';
-import { useAppSelector } from '@/lib/redux/hooks';
+import { useAppSelector, useAppDispatch } from '@/lib/redux/hooks';
+import { fetchWalletData } from '@/lib/redux/slices/walletSlice';
 import { usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
   const walletBalance = useAppSelector(state => state.wallet.balance);
   const carbonCredits = useAppSelector(state => state.wallet.carbonCredits);
   const totalCredits = carbonCredits.reduce((acc, credit) => acc + credit.quantity, 0);
@@ -19,11 +22,33 @@ export default function Navbar() {
   useEffect(() => {
     const checkUser = async () => {
       const { data } = await supabase.auth.getUser();
-      setIsLoggedIn(!!data.user);
+      if (data.user) {
+        setUser(data.user);
+        setIsLoggedIn(true);
+        // Fetch wallet data for the authenticated user
+        dispatch(fetchWalletData(data.user.id));
+      } else {
+        setIsLoggedIn(false);
+        setUser(null);
+      }
     };
 
     checkUser();
-  }, []);
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        setIsLoggedIn(true);
+        dispatch(fetchWalletData(session.user.id));
+      } else {
+        setUser(null);
+        setIsLoggedIn(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [dispatch]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
