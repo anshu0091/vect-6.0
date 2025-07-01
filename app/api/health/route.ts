@@ -9,7 +9,6 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export async function GET() {
   try {
     console.log('Health check: Testing database connection...');
-    console.log('Supabase URL:', supabaseUrl);
     
     // Test database connection with a simple query
     const { data, error } = await supabase
@@ -24,8 +23,7 @@ export async function GET() {
           status: 'unhealthy', 
           database: 'disconnected',
           error: error.message,
-          timestamp: new Date().toISOString(),
-          supabaseUrl: supabaseUrl
+          timestamp: new Date().toISOString()
         },
         { status: 500 }
       );
@@ -37,9 +35,7 @@ export async function GET() {
       database: 'connected',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
-      environment: process.env.NODE_ENV || 'development',
-      supabaseUrl: supabaseUrl,
-      testEmail: process.env.DEFAULT_USER_EMAIL
+      environment: process.env.NODE_ENV || 'development'
     });
   } catch (error) {
     console.error('Health check: Unexpected error:', error);
@@ -47,8 +43,7 @@ export async function GET() {
       { 
         status: 'unhealthy', 
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString(),
-        supabaseUrl: supabaseUrl
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

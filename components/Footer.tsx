@@ -107,46 +107,31 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-emerald-400 transition-colors">
-                  Blog
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-emerald-400 transition-colors">
-                  Press Kit
-                </a>
+                <Link href="/support" className="hover:text-emerald-400 transition-colors">
+                  Support
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Support & Legal */}
+          {/* Legal Links */}
           <div>
-            <h3 className="font-semibold mb-4">Support & Legal</h3>
+            <h3 className="font-semibold mb-4">Legal</h3>
             <ul className="space-y-2 text-gray-400">
               <li>
-                <a href="#" className="hover:text-emerald-400 transition-colors">
-                  Help Center
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-emerald-400 transition-colors">
-                  Contact Support
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-emerald-400 transition-colors">
+                <Link href="/privacy" className="hover:text-emerald-400 transition-colors">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-emerald-400 transition-colors">
+                <Link href="/terms" className="hover:text-emerald-400 transition-colors">
                   Terms of Service
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-emerald-400 transition-colors">
+                <Link href="/cookies" className="hover:text-emerald-400 transition-colors">
                   Cookie Policy
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ReduxProvider } from '@/lib/redux/provider';
 import DisclaimerBanner from '@/components/DisclaimerBanner';
-import TestingBanner from '@/components/TestingBanner';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,7 +19,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <TestingBanner />
         <DisclaimerBanner />
         <ReduxProvider>
           {children}
