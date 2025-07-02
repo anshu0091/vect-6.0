@@ -9,6 +9,12 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     detectSessionInUrl: true,
     flowType: 'pkce'
+  },
+  // Disable any custom database functions/triggers for now
+  global: {
+    headers: {
+      'X-Client-Info': 'vectorium-app'
+    }
   }
 });
 

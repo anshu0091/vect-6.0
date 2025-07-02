@@ -37,6 +37,15 @@ export default function Login() {
           throw new Error('Please check your email and click the confirmation link before signing in.');
         } else if (error.message.includes('rate_limit') || error.status === 429) {
           throw new Error('Too many login attempts. Please wait a minute before trying again.');
+        } else if (error.message.includes('Database error')) {
+          // Handle database error by checking if user is actually signed in
+          const { data: sessionData } = await supabase.auth.getSession();
+          if (sessionData.session) {
+            console.log('Login successful despite database error');
+            router.push('/dashboard');
+            return;
+          }
+          throw new Error('Login failed. Please try again.');
         } else {
           throw new Error(error.message || 'Failed to sign in');
         }

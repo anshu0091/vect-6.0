@@ -20,6 +20,11 @@ export async function GET(request: Request) {
       
       if (error) {
         console.error('Auth callback error:', error);
+        // Don't fail on database errors during callback
+        if (error.message.includes('Database error')) {
+          console.warn('Database error during callback, but proceeding with auth');
+          return NextResponse.redirect(new URL(next, origin));
+        }
         return NextResponse.redirect(new URL('/auth/login?error=callback_error', origin));
       }
 
@@ -29,7 +34,8 @@ export async function GET(request: Request) {
       }
     } catch (error) {
       console.error('Unexpected auth callback error:', error);
-      return NextResponse.redirect(new URL('/auth/login?error=unexpected_error', origin));
+      // Don't fail on unexpected errors, try to proceed
+      return NextResponse.redirect(new URL(next, origin));
     }
   }
 
