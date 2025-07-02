@@ -13,6 +13,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const walletBalance = useAppSelector(state => state.wallet.balance);
@@ -21,29 +22,49 @@ export default function Navbar() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data.user) {
-        setUser(data.user);
-        setIsLoggedIn(true);
-        // Fetch wallet data for the authenticated user
-        dispatch(fetchWalletData(data.user.id));
-      } else {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting session:', error);
+          setIsLoggedIn(false);
+          setUser(null);
+        } else if (session?.user) {
+          console.log('User session found:', session.user.email);
+          setUser(session.user);
+          setIsLoggedIn(true);
+          // Fetch wallet data for the authenticated user
+          dispatch(fetchWalletData(session.user.id));
+        } else {
+          console.log('No user session found');
+          setIsLoggedIn(false);
+          setUser(null);
+        }
+      } catch (error) {
+        console.error('Unexpected error checking user session:', error);
         setIsLoggedIn(false);
         setUser(null);
+      } finally {
+        setLoading(false);
       }
     };
 
     checkUser();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session?.user) {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, session?.user?.email);
+      
+      if (event === 'SIGNED_IN' && session?.user) {
         setUser(session.user);
         setIsLoggedIn(true);
         dispatch(fetchWalletData(session.user.id));
-      } else {
+      } else if (event === 'SIGNED_OUT') {
         setUser(null);
         setIsLoggedIn(false);
+      } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+        setUser(session.user);
+        setIsLoggedIn(true);
       }
     });
 
@@ -51,9 +72,42 @@ export default function Navbar() {
   }, [dispatch]);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/';
+    try {
+      console.log('Signing out user');
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Sign out error:', error);
+      } else {
+        console.log('Sign out successful');
+        setIsOpen(false); // Close mobile menu
+        window.location.href = '/';
+      }
+    } catch (error) {
+      console.error('Unexpected sign out error:', error);
+    }
   };
+
+  if (loading) {
+    return (
+      <nav className="fixed w-full z-50 bg-white/80 backdrop-blur-md">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="flex items-center justify-between h-16">
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="https://freecoins24.io/wp-content/uploads/2024/07/dtxm4BGB_400x400.jpg"
+                alt="Vectorium"
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+              <span className="text-xl font-bold">Vectorium</span>
+            </Link>
+            <div className="animate-pulse bg-gray-200 h-8 w-24 rounded"></div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <>

@@ -1,5 +1,6 @@
 import { CarbonCredit } from '@/lib/redux/slices/marketplaceSlice';
 import { supabase } from '@/lib/supabase';
+import { localCarbonCredits, filterLocalCredits, LocalCarbonCredit } from '@/lib/data/localCarbonCredits';
 
 export interface ApiCarbonCredit {
   id: string;
@@ -40,6 +41,25 @@ export const transformApiCreditToRedux = (apiCredit: ApiCarbonCredit): CarbonCre
   status: apiCredit.status
 });
 
+// Transform local data to match Redux state structure
+export const transformLocalCreditToRedux = (localCredit: LocalCarbonCredit): CarbonCredit => ({
+  id: localCredit.id,
+  name: localCredit.name,
+  description: localCredit.description,
+  price: localCredit.price,
+  quantity: localCredit.quantity,
+  projectName: localCredit.projectName,
+  location: localCredit.location,
+  certificationBody: localCredit.certificationBody,
+  vintage: localCredit.vintage,
+  imageUrl: localCredit.imageUrl,
+  seller: localCredit.seller,
+  carbonReduction: localCredit.carbonReduction,
+  expiryDate: localCredit.expiryDate,
+  category: localCredit.category,
+  status: localCredit.status
+});
+
 export const fetchCarbonCredits = async (filters?: {
   category?: string;
   minPrice?: number;
@@ -61,44 +81,46 @@ export const fetchCarbonCredits = async (filters?: {
     const url = `/api/carbon-credits${params.toString() ? `?${params.toString()}` : ''}`;
     console.log('Client: Fetching from URL:', url);
 
+    // Set a timeout for the API request
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
+      signal: controller.signal
     });
     
+    clearTimeout(timeoutId);
     console.log('Client: Response status:', response.status);
     
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Client: Response error:', errorText);
-      
-      let errorData;
-      try {
-        errorData = JSON.parse(errorText);
-      } catch {
-        errorData = { error: errorText };
-      }
-      
-      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const result = await response.json();
     console.log('Client: API response:', result);
     
     if (!result.data) {
-      console.warn('Client: No data field in response:', result);
-      return [];
+      console.warn('Client: No data field in response, falling back to local data');
+      throw new Error('No data in API response');
     }
 
     const transformedData = result.data.map(transformApiCreditToRedux);
-    console.log('Client: Transformed data:', transformedData);
+    console.log('Client: Successfully fetched', transformedData.length, 'credits from API');
     
     return transformedData;
   } catch (error) {
-    console.error('Client: Error fetching carbon credits:', error);
-    throw new Error(error instanceof Error ? error.message : 'Failed to fetch carbon credits');
+    console.warn('Client: API request failed, falling back to local data:', error);
+    
+    // Fallback to local data
+    const filteredLocalData = filterLocalCredits(localCarbonCredits, filters || {});
+    const transformedLocalData = filteredLocalData.map(transformLocalCreditToRedux);
+    
+    console.log('Client: Using local fallback data:', transformedLocalData.length, 'credits');
+    return transformedLocalData;
   }
 };
 
@@ -106,11 +128,16 @@ export const fetchUserCarbonCredits = async () => {
   try {
     const { data: { session } } = await supabase.auth.getSession();
     const accessToken = session?.access_token;
+    
+    if (!accessToken) {
+      throw new Error('No authentication token available');
+    }
+
     const response = await fetch(`/api/user-credits`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        ...(accessToken && { 'Authorization': `Bearer ${accessToken}` }),
+        'Authorization': `Bearer ${accessToken}`,
       },
     });
     
@@ -120,10 +147,11 @@ export const fetchUserCarbonCredits = async () => {
     }
 
     const { data } = await response.json();
-    return data;
+    return data || [];
   } catch (error) {
     console.error('Error fetching user carbon credits:', error);
-    throw new Error(error instanceof Error ? error.message : 'Failed to fetch user carbon credits');
+    // Return empty array as fallback for user-specific data
+    return [];
   }
 };
 
@@ -131,11 +159,16 @@ export const fetchUserTransactions = async () => {
   try {
     const { data: { session } } = await supabase.auth.getSession();
     const accessToken = session?.access_token;
+    
+    if (!accessToken) {
+      throw new Error('No authentication token available');
+    }
+
     const response = await fetch(`/api/transactions`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        ...(accessToken && { 'Authorization': `Bearer ${accessToken}` }),
+        'Authorization': `Bearer ${accessToken}`,
       },
     });
     
@@ -145,10 +178,11 @@ export const fetchUserTransactions = async () => {
     }
 
     const { data } = await response.json();
-    return data;
+    return data || [];
   } catch (error) {
     console.error('Error fetching user transactions:', error);
-    throw new Error(error instanceof Error ? error.message : 'Failed to fetch user transactions');
+    // Return empty array as fallback for user-specific data
+    return [];
   }
 };
 
@@ -163,11 +197,15 @@ export const createTransaction = async (transactionData: {
     const { data: { session } } = await supabase.auth.getSession();
     const accessToken = session?.access_token;
 
+    if (!accessToken) {
+      throw new Error('Authentication required');
+    }
+
     const response = await fetch('/api/transactions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(accessToken && { 'Authorization': `Bearer ${accessToken}` }),
+        'Authorization': `Bearer ${accessToken}`,
       },
       body: JSON.stringify(transactionData),
     });

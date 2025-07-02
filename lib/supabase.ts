@@ -7,7 +7,8 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: true
+    detectSessionInUrl: true,
+    flowType: 'pkce'
   }
 });
 
@@ -24,4 +25,11 @@ export const getStoredEmail = () => {
     return localStorage.getItem('signupEmail');
   }
   return null;
+};
+
+// Helper function to clear stored email
+export const clearStoredEmail = () => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('signupEmail');
+  }
 };

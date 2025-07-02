@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
+import { supabase, getStoredEmail, clearStoredEmail } from '@/lib/supabase';
 
 export default function Verification() {
   const [loading, setLoading] = useState(false);
@@ -16,11 +16,13 @@ export default function Verification() {
     
     try {
       // Get the email from localStorage if available
-      const email = localStorage.getItem('signupEmail');
+      const email = getStoredEmail();
       
       if (!email) {
         throw new Error('Email not found. Please try signing up again.');
       }
+      
+      console.log('Resending verification email to:', email);
       
       const { error } = await supabase.auth.resend({
         type: 'signup',
@@ -28,6 +30,7 @@ export default function Verification() {
       });
       
       if (error) {
+        console.error('Resend error:', error);
         if (error.message.includes('rate_limit') || error.status === 429) {
           throw new Error('Please wait before requesting another email.');
         }
@@ -39,6 +42,7 @@ export default function Verification() {
         text: 'Verification email has been resent. Please check your inbox.'
       });
     } catch (err: any) {
+      console.error('Resend verification error:', err);
       setMessage({
         type: 'error',
         text: err.message || 'Failed to resend verification email.'
@@ -46,6 +50,11 @@ export default function Verification() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoToLogin = () => {
+    // Clear stored email when user goes to login
+    clearStoredEmail();
   };
 
   return (
@@ -88,6 +97,7 @@ export default function Verification() {
           <div className="mt-6 flex flex-col space-y-4">
             <Link
               href="/auth/login"
+              onClick={handleGoToLogin}
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
             >
               Go to login
@@ -96,10 +106,14 @@ export default function Verification() {
               type="button"
               onClick={handleResendEmail}
               disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-70"
+              className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {loading ? 'Sending...' : 'Resend verification email'}
             </button>
+          </div>
+
+          <div className="mt-6 text-xs text-gray-500">
+            <p>Didn't receive the email? Check your spam folder or try resending.</p>
           </div>
         </div>
       </div>
