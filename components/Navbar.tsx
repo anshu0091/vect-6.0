@@ -33,8 +33,7 @@ export default function Navbar() {
           console.log('User session found:', session.user.email);
           setUser(session.user);
           setIsLoggedIn(true);
-          // Fetch wallet data for the authenticated user
-          dispatch(fetchWalletData(session.user.id));
+          // Note: Not fetching wallet data since database is not configured
         } else {
           console.log('No user session found');
           setIsLoggedIn(false);
@@ -58,7 +57,7 @@ export default function Navbar() {
       if (event === 'SIGNED_IN' && session?.user) {
         setUser(session.user);
         setIsLoggedIn(true);
-        dispatch(fetchWalletData(session.user.id));
+        // Note: Not fetching wallet data since database is not configured
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
         setIsLoggedIn(false);

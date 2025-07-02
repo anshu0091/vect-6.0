@@ -34,7 +34,7 @@ export interface WalletState {
 }
 
 const initialState: WalletState = {
-  balance: 0, // Will be fetched from database
+  balance: 10000, // Default balance for local mode
   carbonCredits: [],
   transactions: [],
   connected: false,
@@ -56,24 +56,24 @@ export const fetchWalletData = createAsyncThunk(
     return {
       balance: walletBalance,
       carbonCredits: userCredits.map((credit: any) => ({
-        id: credit.credit_id,
-        name: credit.carbon_credits.name,
-        quantity: credit.quantity,
-        vintage: credit.carbon_credits.vintage,
-        certificationBody: credit.carbon_credits.certification_body,
-        carbonReduction: credit.carbon_credits.carbon_reduction * credit.quantity
+        id: credit.credit_id || credit.id,
+        name: credit.carbon_credits?.name || credit.name || 'Unknown Credit',
+        quantity: credit.quantity || 0,
+        vintage: credit.carbon_credits?.vintage || credit.vintage || '2024',
+        certificationBody: credit.carbon_credits?.certification_body || credit.certificationBody || 'Unknown',
+        carbonReduction: (credit.carbon_credits?.carbon_reduction || credit.carbonReduction || 0) * (credit.quantity || 0)
       })),
       transactions: userTransactions.map((tx: any) => ({
         id: tx.id,
         type: tx.type,
-        creditId: tx.credit_id,
-        creditName: tx.carbon_credits.name,
+        creditId: tx.credit_id || tx.creditId,
+        creditName: tx.carbon_credits?.name || tx.creditName || 'Unknown Credit',
         quantity: tx.quantity,
         price: tx.price,
-        totalAmount: tx.total_amount,
-        timestamp: tx.created_at,
+        totalAmount: tx.total_amount || tx.totalAmount,
+        timestamp: tx.created_at || tx.timestamp,
         status: tx.status,
-        txHash: tx.tx_hash
+        txHash: tx.tx_hash || tx.txHash
       }))
     };
   }

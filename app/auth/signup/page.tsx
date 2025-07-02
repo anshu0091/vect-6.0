@@ -67,9 +67,6 @@ export default function SignUp() {
         password: password,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
-          data: {
-            email_confirm: true
-          }
         },
       });
 
