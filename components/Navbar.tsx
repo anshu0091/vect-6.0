@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, X, LogIn, UserPlus, ShoppingCart, Wallet, Bell } from 'lucide-react';
+import { Menu, X, LogIn, UserPlus, ShoppingCart, Wallet, Bell, Shield, Users, Briefcase, HelpCircle } from 'lucide-react';
 import { useAppSelector } from '@/lib/redux/hooks';
 import { usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -50,6 +50,18 @@ export default function Navbar() {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
               <Link 
+                href="/how-it-works" 
+                className={`flex items-center gap-2 ${
+                  pathname?.includes('/how-it-works') 
+                    ? 'text-emerald-600' 
+                    : 'text-gray-600 hover:text-emerald-600'
+                } transition-colors`}
+              >
+                <HelpCircle className="w-5 h-5" />
+                <span>How It Works</span>
+              </Link>
+
+              <Link 
                 href="/marketplace" 
                 className={`flex items-center gap-2 ${
                   pathname?.includes('/marketplace') 
@@ -59,6 +71,42 @@ export default function Navbar() {
               >
                 <ShoppingCart className="w-5 h-5" />
                 <span>Marketplace</span>
+              </Link>
+
+              <Link 
+                href="/security" 
+                className={`flex items-center gap-2 ${
+                  pathname?.includes('/security') 
+                    ? 'text-emerald-600' 
+                    : 'text-gray-600 hover:text-emerald-600'
+                } transition-colors`}
+              >
+                <Shield className="w-5 h-5" />
+                <span>Security</span>
+              </Link>
+
+              <Link 
+                href="/about" 
+                className={`flex items-center gap-2 ${
+                  pathname?.includes('/about') 
+                    ? 'text-emerald-600' 
+                    : 'text-gray-600 hover:text-emerald-600'
+                } transition-colors`}
+              >
+                <Users className="w-5 h-5" />
+                <span>About</span>
+              </Link>
+
+              <Link 
+                href="/careers" 
+                className={`flex items-center gap-2 ${
+                  pathname?.includes('/careers') 
+                    ? 'text-emerald-600' 
+                    : 'text-gray-600 hover:text-emerald-600'
+                } transition-colors`}
+              >
+                <Briefcase className="w-5 h-5" />
+                <span>Careers</span>
               </Link>
               
               {isLoggedIn && (
@@ -157,12 +205,48 @@ export default function Navbar() {
             <div className="flex-1 overflow-y-auto py-4">
               <div className="px-4 space-y-4">
                 <Link
+                  href="/how-it-works"
+                  className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <HelpCircle className="w-5 h-5" />
+                  <span>How It Works</span>
+                </Link>
+
+                <Link
                   href="/marketplace"
                   className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors"
                   onClick={() => setIsOpen(false)}
                 >
                   <ShoppingCart className="w-5 h-5" />
                   <span>Marketplace</span>
+                </Link>
+
+                <Link
+                  href="/security"
+                  className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Shield className="w-5 h-5" />
+                  <span>Security</span>
+                </Link>
+
+                <Link
+                  href="/about"
+                  className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Users className="w-5 h-5" />
+                  <span>About</span>
+                </Link>
+
+                <Link
+                  href="/careers"
+                  className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Briefcase className="w-5 h-5" />
+                  <span>Careers</span>
                 </Link>
                 
                 {isLoggedIn && (
