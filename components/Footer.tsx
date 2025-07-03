@@ -66,8 +66,8 @@ export default function Footer() {
               <li><Link href="/marketplace" className="hover:text-emerald-400 transition-colors">Marketplace</Link></li>
               <li><Link href="/wallet" className="hover:text-emerald-400 transition-colors">Wallet</Link></li>
               <li><Link href="/security" className="hover:text-emerald-400 transition-colors">Security</Link></li>
-              <li><Link href="/api-docs" className="hover:text-emerald-400 transition-colors">API Documentation</Link></li>
-              <li><Link href="/developer-tools" className="hover:text-emerald-400 transition-colors">Developer Tools</Link></li>
+              <li><Link href="/coming-soon" className="hover:text-emerald-400 transition-colors">API Documentation</Link></li>
+              <li><Link href="/coming-soon" className="hover:text-emerald-400 transition-colors">Developer Tools</Link></li>
             </ul>
           </div>
 
@@ -77,10 +77,10 @@ export default function Footer() {
             <ul className="space-y-3 text-gray-400">
               <li><Link href="/about" className="hover:text-emerald-400 transition-colors">About Us</Link></li>
               <li><Link href="/careers" className="hover:text-emerald-400 transition-colors">Careers</Link></li>
-              <li><Link href="/blog" className="hover:text-emerald-400 transition-colors">Blog</Link></li>
-              <li><Link href="/press" className="hover:text-emerald-400 transition-colors">Press</Link></li>
-              <li><Link href="/investors" className="hover:text-emerald-400 transition-colors">Investors</Link></li>
-              <li><Link href="/partnerships" className="hover:text-emerald-400 transition-colors">Partnerships</Link></li>
+              <li><Link href="/coming-soon" className="hover:text-emerald-400 transition-colors">Blog</Link></li>
+              <li><Link href="/coming-soon" className="hover:text-emerald-400 transition-colors">Press</Link></li>
+              <li><Link href="/coming-soon" className="hover:text-emerald-400 transition-colors">Investors</Link></li>
+              <li><Link href="/coming-soon" className="hover:text-emerald-400 transition-colors">Partnerships</Link></li>
             </ul>
           </div>
 
@@ -89,11 +89,11 @@ export default function Footer() {
             <h3 className="font-semibold mb-4 text-emerald-400">Resources</h3>
             <ul className="space-y-3 text-gray-400">
               <li><Link href="/250617 Vectorium (VECT) – Whitepaper .25 Edition.pdf" target="_blank" className="hover:text-emerald-400 transition-colors">White Paper</Link></li>
-              <li><Link href="/help-center" className="hover:text-emerald-400 transition-colors">Help Center</Link></li>
+              <li><Link href="/coming-soon" className="hover:text-emerald-400 transition-colors">Help Center</Link></li>
               <li><Link href="/support" className="hover:text-emerald-400 transition-colors">Support</Link></li>
-              <li><Link href="/community" className="hover:text-emerald-400 transition-colors">Community</Link></li>
-              <li><Link href="/status" className="hover:text-emerald-400 transition-colors">System Status</Link></li>
-              <li><Link href="/carbon-calculator" className="hover:text-emerald-400 transition-colors">Carbon Calculator</Link></li>
+              <li><Link href="/coming-soon" className="hover:text-emerald-400 transition-colors">Community</Link></li>
+              <li><Link href="/coming-soon" className="hover:text-emerald-400 transition-colors">System Status</Link></li>
+              <li><Link href="/coming-soon" className="hover:text-emerald-400 transition-colors">Carbon Calculator</Link></li>
             </ul>
           </div>
         </div>
@@ -105,8 +105,8 @@ export default function Footer() {
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/privacy-policy" className="text-gray-400 hover:text-emerald-400 transition-colors text-sm">Privacy Policy</Link>
               <Link href="/terms-of-service" className="text-gray-400 hover:text-emerald-400 transition-colors text-sm">Terms of Service</Link>
-              <Link href="/cookie-policy" className="text-gray-400 hover:text-emerald-400 transition-colors text-sm">Cookie Policy</Link>
-              <Link href="/compliance" className="text-gray-400 hover:text-emerald-400 transition-colors text-sm">Compliance</Link>
+              <Link href="/coming-soon" className="text-gray-400 hover:text-emerald-400 transition-colors text-sm">Cookie Policy</Link>
+              <Link href="/coming-soon" className="text-gray-400 hover:text-emerald-400 transition-colors text-sm">Compliance</Link>
             </div>
           </div>
         </div>
